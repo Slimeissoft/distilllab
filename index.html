@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DistillLab - Knowledge Distillation Laboratory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 导航 -->
+    <header class="site-header" :class="{ scrolled: isScrolled }">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">⚗️</span>
+          <span class="logo-text">DistillLab</span>
+        </div>
+        <nav class="main-nav">
+          <button v-for="item in navItems" :key="item.id"
+            :class="{ active: currentPage === item.id }"
+            @click="currentPage = item.id">
+            {{ item.label }}
+          </button>
+        </nav>
+        <div class="header-actions">
+          <a href="https://github.com/Slimeissoft/distilllab" target="_blank" class="github-link">
+            <svg height="20" width="20" viewBox="0 0 16 16"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- 首页 -->
+    <section v-if="currentPage === 'home'" class="page-home">
+      <div class="hero">
+        <div class="hero-orb orb-1"></div>
+        <div class="hero-orb orb-2"></div>
+        <div class="hero-orb orb-3"></div>
+        <div class="hero-content">
+          <div class="hero-badge">Knowledge Distillation</div>
+          <h1 class="hero-title">
+            <span>理解模型蒸馏的</span>
+            <span class="gradient-text">艺术与科学</span>
+          </h1>
+          <p class="hero-desc">
+            交互式探索知识蒸馏原理：从 Teacher-Student 架构到温度调优，<br>
+            从软标签到注意力迁移，掌握 AI 模型压缩的核心技术。
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" @click="currentPage = 'playground'">
+              开始实验
+            </button>
+            <button class="btn btn-outline" @click="currentPage = 'theory'">
+              学习原理
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 特性卡片 -->
+      <div class="features-section">
+        <div class="section-container">
+          <div class="features-grid">
+            <div class="feature-card" v-for="feature in features" :key="feature.title">
+              <div class="feature-icon">{{ feature.icon }}</div>
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 架构预览 -->
+      <div class="preview-section">
+        <div class="section-container">
+          <h2 class="section-title">蒸馏架构一览</h2>
+          <div class="architecture-preview">
+            <div class="model-box teacher">
+              <div class="model-header">
+                <span class="model-icon">🎓</span>
+                <span>Teacher Model</span>
+              </div>
+              <div class="model-info">
+                <div class="param-row">
+                  <span>参数量</span>
+                  <span class="param-value large">1.2B</span>
+                </div>
+                <div class="param-row">
+                  <span>推理延迟</span>
+                  <span class="param-value">340ms</span>
+                </div>
+              </div>
+            </div>
+            <div class="distill-flow">
+              <div class="flow-arrow">
+                <svg width="60" height="24"><path d="M0 12 L50 12 M40 4 L52 12 L40 20" stroke="currentColor" fill="none" stroke-width="2"/></svg>
+              </div>
+              <div class="flow-labels">
+                <span class="flow-label">Logits</span>
+                <span class="flow-label">Features</span>
+                <span class="flow-label">Attention</span>
+              </div>
+            </div>
+            <div class="model-box student">
+              <div class="model-header">
+                <span class="model-icon">🎒</span>
+                <span>Student Model</span>
+              </div>
+              <div class="model-info">
+                <div class="param-row">
+                  <span>参数量</span>
+                  <span class="param-value large success">120M</span>
+                </div>
+                <div class="param-row">
+                  <span>推理延迟</span>
+                  <span class="param-value success">28ms</span>
+                </div>
+              </div>
+              <div class="compression-badge">10x 压缩</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 理论页面 -->
+    <section v-if="currentPage === 'theory'" class="page-theory">
+      <div class="page-header">
+        <h1>蒸馏原理</h1>
+        <p>深入理解知识蒸馏的核心概念</p>
+      </div>
+      <div class="section-container">
+        <div class="theory-tabs">
+          <button v-for="tab in theoryTabs" :key="tab.id"
+            :class="{ active: currentTheory === tab.id }"
+            @click="currentTheory = tab.id">
+            {{ tab.label }}
+          </button>
+        </div>
+        
+        <div class="theory-content">
+          <!-- 软标签 -->
+          <div v-if="currentTheory === 'soft-label'" class="theory-panel">
+            <h2>软标签蒸馏 (Soft Label Distillation)</h2>
+            <p class="theory-intro">
+              神经网络的输出层通常使用 Softmax 函数将 logits 转换为概率分布。
+              传统训练使用硬标签（one-hot），而蒸馏使用 Teacher 模型的软标签（概率分布）。
+            </p>
+            
+            <div class="demo-panel">
+              <h3>温度参数的影响</h3>
+              <div class="temp-control">
+                <label>温度 T = <span class="temp-value">{{ temperature }}</span></label>
+                <input type="range" v-model.number="temperature" min="1" max="20" step="0.5">
+              </div>
+              <div class="softmax-demo">
+                <div class="logits-input">
+                  <h4>原始 Logits</h4>
+                  <div class="logit-bars">
+                    <div v-for="(logit, i) in logits" :key="i" class="logit-bar">
+                      <span class="label">类别 {{ i + 1 }}</span>
+                      <div class="bar-track">
+                        <div class="bar-fill" :style="{ width: (logit + 5) * 10 + '%' }"></div>
+                      </div>
+                      <span class="value">{{ logit.toFixed(1) }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="arrow-icon">→</div>
+                <div class="probs-output">
+                  <h4>软标签概率</h4>
+                  <div class="prob-bars">
+                    <div v-for="(prob, i) in softProbs" :key="i" class="prob-bar">
+                      <span class="label">类别 {{ i + 1 }}</span>
+                      <div class="bar-track prob">
+                        <div class="bar-fill gradient" :style="{ width: prob * 100 + '%' }"></div>
+                      </div>
+                      <span class="value">{{ (prob * 100).toFixed(1) }}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="insight-box">
+                <span class="insight-icon">💡</span>
+                <p>{{ tempInsight }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 损失函数 -->
+          <div v-if="currentTheory === 'loss'" class="theory-panel">
+            <h2>蒸馏损失函数</h2>
+            <p class="theory-intro">
+              知识蒸馏的损失函数是学生模型训练的核心。它结合了软标签损失和硬标签损失。
+            </p>
+            
+            <div class="formula-box">
+              <div class="formula">
+                L<sub>total</sub> = α · L<sub>soft</sub> + (1-α) · L<sub>hard</sub>
+              </div>
+            </div>
+
+            <div class="loss-demo">
+              <div class="loss-term">
+                <h4>软标签损失 (KL 散度)</h4>
+                <div class="formula-small">
+                  L<sub>soft</sub> = T² · KL(p<sub>t</sub> || p<sub>s</sub>)
+                </div>
+                <p>衡量 Student 与 Teacher 概率分布的差异，温度 T 的平方确保梯度量级一致。</p>
+              </div>
+              <div class="loss-term">
+                <h4>硬标签损失 (交叉熵)</h4>
+                <div class="formula-small">
+                  L<sub>hard</sub> = CE(y, p<sub>s</sub>)
+                </div>
+                <p>确保 Student 在真实标签上的表现，提供正确的学习方向。</p>
+              </div>
+            </div>
+
+            <div class="demo-panel">
+              <h3>调整 α 参数</h3>
+              <div class="alpha-control">
+                <label>α = <span class="alpha-value">{{ alpha }}</span></label>
+                <input type="range" v-model.number="alpha" min="0" max="1" step="0.05">
+              </div>
+              <div class="alpha-visual">
+                <div class="alpha-bar">
+                  <div class="soft-portion" :style="{ width: (alpha * 100) + '%' }">
+                    <span v-if="alpha > 0.15">软标签 {{ (alpha * 100).toFixed(0) }}%</span>
+                  </div>
+                  <div class="hard-portion" :style="{ width: ((1-alpha) * 100) + '%' }">
+                    <span v-if="alpha < 0.85">硬标签 {{ ((1-alpha) * 100).toFixed(0) }}%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="insight-box">
+                <span class="insight-icon">📊</span>
+                <p>{{ alphaInsight }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 蒸馏方法 -->
+          <div v-if="currentTheory === 'methods'" class="theory-panel">
+            <h2>蒸馏方法对比</h2>
+            <p class="theory-intro">
+              除了经典的软标签蒸馏，还有多种蒸馏方法各有优劣。
+            </p>
+            
+            <div class="methods-grid">
+              <div class="method-card" v-for="method in distillMethods" :key="method.name">
+                <div class="method-header">
+                  <span class="method-icon">{{ method.icon }}</span>
+                  <h4>{{ method.name }}</h4>
+                </div>
+                <p class="method-desc">{{ method.desc }}</p>
+                <div class="method-meta">
+                  <span class="meta-item">
+                    <span class="meta-label">复杂度</span>
+                    <span class="meta-value">{{ method.complexity }}</span>
+                  </span>
+                  <span class="meta-item">
+                    <span class="meta-label">效果</span>
+                    <span class="meta-value">{{ method.effect }}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 实验场 -->
+    <section v-if="currentPage === 'playground'" class="page-playground">
+      <div class="page-header">
+        <h1>蒸馏实验室</h1>
+        <p>亲手调节参数，观察蒸馏效果</p>
+      </div>
+      <div class="section-container">
+        <div class="playground-layout">
+          <!-- 控制面板 -->
+          <div class="control-panel">
+            <div class="panel-section">
+              <h3>模型配置</h3>
+              <div class="config-row">
+                <label>Teacher 模型</label>
+                <select v-model="teacherModel">
+                  <option value="bert-large">BERT-Large (340M)</option>
+                  <option value="gpt2-medium">GPT2-Medium (345M)</option>
+                  <option value="resnet152">ResNet-152 (60M)</option>
+                </select>
+              </div>
+              <div class="config-row">
+                <label>Student 模型</label>
+                <select v-model="studentModel">
+                  <option value="bert-small">BERT-Small (14M)</option>
+                  <option value="distilbert">DistilBERT (66M)</option>
+                  <option value="mobilebert">MobileBERT (25M)</option>
+                </select>
+              </div>
+              <div class="model-stats">
+                <div class="stat-item">
+                  <span class="stat-label">压缩比</span>
+                  <span class="stat-value highlight">{{ compressionRatio }}x</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">参数减少</span>
+                  <span class="stat-value success">{{ paramReduction }}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-section">
+              <h3>蒸馏参数</h3>
+              <div class="config-row">
+                <label>温度 T</label>
+                <div class="slider-with-value">
+                  <input type="range" v-model.number="playTemp" min="1" max="20" step="1">
+                  <span class="slider-value">{{ playTemp }}</span>
+                </div>
+              </div>
+              <div class="config-row">
+                <label>α (软标签权重)</label>
+                <div class="slider-with-value">
+                  <input type="range" v-model.number="playAlpha" min="0" max="1" step="0.05">
+                  <span class="slider-value">{{ playAlpha }}</span>
+                </div>
+              </div>
+              <div class="config-row">
+                <label>学习率</label>
+                <div class="slider-with-value">
+                  <input type="range" v-model.number="learningRate" min="1" max="5" step="0.5">
+                  <span class="slider-value">{{ learningRate }}e-5</span>
+                </div>
+              </div>
+              <div class="config-row">
+                <label>训练轮数</label>
+                <div class="slider-with-value">
+                  <input type="range" v-model.number="epochs" min="3" max="20" step="1">
+                  <span class="slider-value">{{ epochs }}</span>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary full-width" @click="runDistillation" :disabled="isTraining">
+              {{ isTraining ? '训练中...' : '开始蒸馏' }}
+            </button>
+          </div>
+
+          <!-- 可视化面板 -->
+          <div class="visual-panel">
+            <div class="visual-header">
+              <h3>训练过程可视化</h3>
+              <div class="visual-tabs">
+                <button :class="{ active: visualMode === 'loss' }" @click="visualMode = 'loss'">Loss曲线</button>
+                <button :class="{ active: visualMode === 'accuracy' }" @click="visualMode = 'accuracy'">准确率</button>
+              </div>
+            </div>
+            
+            <div class="chart-container">
+              <canvas ref="chartCanvas" id="trainChart"></canvas>
+              <div v-if="!isTrained && !isTraining" class="chart-placeholder">
+                <span>🔬</span>
+                <p>调整参数后点击"开始蒸馏"</p>
+              </div>
+            </div>
+
+            <div class="metrics-row" v-if="isTrained">
+              <div class="metric-card">
+                <span class="metric-label">Student 准确率</span>
+                <span class="metric-value">{{ trainedAccuracy.toFixed(1) }}%</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Teacher 准确率</span>
+                <span class="metric-value">{{ teacherAccuracy }}%</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">知识保留率</span>
+                <span class="metric-value highlight">{{ (trainedAccuracy / teacherAccuracy * 100).toFixed(1) }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 对比页面 -->
+    <section v-if="currentPage === 'compare'" class="page-compare">
+      <div class="page-header">
+        <h1>方法对比</h1>
+        <p>不同蒸馏技术的效果与适用场景</p>
+      </div>
+      <div class="section-container">
+        <div class="compare-table-wrapper">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>方法</th>
+                <th>压缩率</th>
+                <th>精度保持</th>
+                <th>训练成本</th>
+                <th>适用场景</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in compareData" :key="item.method">
+                <td class="method-cell">
+                  <span class="method-icon">{{ item.icon }}</span>
+                  {{ item.method }}
+                </td>
+                <td><span class="badge" :class="item.compressClass">{{ item.compress }}</span></td>
+                <td>{{ item.accuracy }}</td>
+                <td>{{ item.cost }}</td>
+                <td class="scenario-cell">{{ item.scenario }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="radar-chart-section">
+          <h3>多维效果评估</h3>
+          <div class="radar-container">
+            <canvas ref="radarCanvas" id="radarChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="site-footer">
+      <p>© 2026 DistillLab. 探索模型蒸馏的无限可能。</p>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
